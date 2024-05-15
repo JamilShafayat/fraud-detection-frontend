@@ -19,13 +19,19 @@ export const RegisterSchema = z.object({
 });
 
 export const FraudCheckSchema = z.object({
-    title: z.string().min(1, {
-        message: "Title is required"
-    }),
-    cardNumber: z.string().min(1, {
+    cc_num: z.string().min(1, {
         message: "Card number is required"
     }),
-    destination: z.string().min(1, {
-        message: "Location name is required"
+    amt: z.string().min(1, {
+        message: "Transaaction amount is required"
+    }),
+    unix_time: z.string().min(1, {
+        message: "Transaaction time is required"
+    }),
+    merch_lat: z.string().min(1, {
+        message: "Location latitude is required"
+    }),
+    merch_long: z.string().min(1, {
+        message: "Location longitude is required"
     }),
 });

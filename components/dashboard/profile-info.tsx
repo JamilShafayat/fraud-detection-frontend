@@ -2,7 +2,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "../ui/card";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import jsonwebtoken from 'jsonwebtoken';
 import jwt_decode from "jwt-decode";
 
@@ -18,38 +18,47 @@ interface ProfileProps {
 }
 
 export const ProfileInfo = ({label}: ProfileInfoProps) => {
-    const [data, setData] = useState<ProfileProps>({} as ProfileProps);
-    const [userId, setUserId] = useState("");
-    const token = localStorage.getItem('token') || '';
+    const [state, setState] = useState({
+        data: {} as ProfileProps,
+        userId: "",
+        token: ""
+    });
 
-    const getDecodedJwt: any = async () => {
-        return jsonwebtoken.decode(token)
-    };
+    // Get token and userId once on mount
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem('token') || '';
 
-    async function processDecodedJwt() {
-        try {
-          const decodedJwt = await getDecodedJwt();
-          setUserId(() => decodedJwt?.id)
-        } catch (error) {
-          console.error('Error:', error);
+            const decodedJwt = jsonwebtoken.decode(token);
+
+            setState((prevState) => ({
+                ...prevState,
+                token,
+                userId: decodedJwt?.id || ''
+            }));
         }
-      }
-    
-      
-      useEffect(() => {
-          const fetchData = async () => {
+    }, []);
+
+    const fetchData = useCallback(async () => {
+        if (state.userId) {
             try {
-                await processDecodedJwt();
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${userId}`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/${state.userId}`);
                 const jsonData = await response.json();
-                setData(jsonData);
+                setState((prevState) => ({
+                    ...prevState,
+                    data: jsonData
+                }));
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
-        };
-    
+        }
+    }, [state.userId]);
+
+    // Fetch user data when userId is set
+    useEffect(() => {
         fetchData();
-      }, [userId]);
+    }, [fetchData]);
+      
 
     return (
         <Card className="w-[600px] h-full max-h-[500px] shadow-md"> 
@@ -65,7 +74,7 @@ export const ProfileInfo = ({label}: ProfileInfoProps) => {
                         Id
                     </p>
                     <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                        {data?._id}
+                        {state.data?._id}
                     </p>
                 </div>
 
@@ -74,7 +83,7 @@ export const ProfileInfo = ({label}: ProfileInfoProps) => {
                         Name
                     </p>
                     <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                        {data.name}
+                        {state.data.name}
                     </p>
                 </div>
 
@@ -83,7 +92,7 @@ export const ProfileInfo = ({label}: ProfileInfoProps) => {
                         Email
                     </p>
                     <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                        {data.email}
+                        {state.data.email}
                     </p>
                 </div>
             </CardContent>

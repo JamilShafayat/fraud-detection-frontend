@@ -25,7 +25,7 @@ export const Navbar = () => {
                 </Button>
                 <Button asChild variant={pathname === '/dashboard/check-list' ? "default" : "outline"}>
                     <Link href="/dashboard/check-list">
-                        Check List
+                        History
                     </Link>         
                 </Button>
                 <Button asChild variant={pathname === '/dashboard/profile' ? "default" : "outline"}>

@@ -10,18 +10,22 @@ interface CheckListProps {
 }
 
 interface FraudCheckProps {
-    title: string;
-    cardNumber: string;
-    destination: string;
-    fraud: boolean;
+    cc_num: number;
+    amt: number;
+    unix_time: number;
+    merch_lat: number;
+    merch_long: number;
+    isFraud: boolean;
 }
 
 export const CheckList = ({label}: CheckListProps) => {
     const [data, setData] = useState<FraudCheckProps[]>([{
-        title: "",
-        cardNumber: "",
-        destination: "",
-        fraud: false
+        cc_num: 0,
+        amt: 0,
+        unix_time: 0,
+        merch_lat: 0,
+        merch_long: 0,
+        isFraud: false
     }]);
 
     useEffect(() => {
@@ -52,31 +56,26 @@ export const CheckList = ({label}: CheckListProps) => {
                         <div className="flex rounded-lg border p-1 shadow-sm h-[110px]">
                             <div className="flex-none w-64">
                                 <p className="text-sm font-medium">
-                                    Title
+                                    Card Number
                                 </p>
                                 <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                                    {singleData?.title}
+                                    {singleData?.cc_num}
                                 </p>
-                                <p className="text-sm font-medium mt-1">
-                                    Card No.
+
+                                <p className="text-sm font-medium mt-2">
+                                    Is Fraud
                                 </p>
                                 <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                                    {singleData?.cardNumber}
+                                    {singleData?.isFraud ? 'True' : 'False' }
                                 </p>
                             </div>
 
                             <div className="flex-none w-32">
-                                <p className="text-sm font-medium">
-                                    Location
-                                </p>
-                                <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                                    {singleData?.destination}
-                                </p>
                                 <p className="text-sm font-medium mt-1">
-                                    Is Fraud
+                                    Amount
                                 </p>
                                 <p className="truncate text-xs max-w-[180px] font-mono p-1 bg-slate-100 rounded-md">
-                                    {singleData?.fraud ? 'True' : 'False'}
+                                    {singleData?.amt}
                                 </p>
                             </div>
                         </div>
